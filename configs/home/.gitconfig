@@ -1,0 +1,54 @@
+[user]
+	name  = PairedPrototype
+	email = pairedprototype@hotmail.com
+[credential]
+	helper = cache --timeout=18000
+[core] 
+  editor       = vim
+  ignorefile   = /home/pairedprototype/.gitignore
+  excludesfile = /home/pairedprototype/.gitignore
+[color] 
+  autocrlf    = input
+  branch      = auto
+  diff        = auto
+  status      = auto
+  interactive = auto
+  ui          = auto
+[color "branch"]
+  current = yellow reverse
+  local   = yellow bold
+  remote  = cyan bold
+[color "diff"]
+  new    = yellow bold
+  old    = red bold
+  meta   = cyan bold
+  frag   = white bold
+  commit = white bold
+[color "status"]
+  added     = yellow bold
+  changed   = cyan bold
+  untracked = red bold
+  branch    = blue bold
+[difftool]
+  prompt = false
+[mergetool]
+  keepBackup = false
+[pull]
+  rebase = preserve
+[push]
+  default = nothing
+[alias]
+  br         = branch
+  st         = status
+  co         = checkout
+  addr       = add -A .
+  stat       = log --stat
+  commits    = log --all --graph --abbrev-commit --date=relative --pretty=format:'%C(bold blue)%h%Creset -%C(auto)%d%Creset %s %C(yellow)(%cr) %C(bold blue)<%an>%Creset'
+  ff         = merge --ff-only
+  uncommit   = reset --soft HEAD~1
+  diffmaster = diff --stat --cached master
+  rbm        = rebase master
+  distance   = "!f() { git log --oneline master..HEAD | wc -l; }; echo \"📊  `f` - Commits ahead\""
+  squash     = rebase --interactive
+[gpg]
+	program = gpg2
