@@ -5,6 +5,9 @@
 # If not running interactively, don't do anything
 [[ ! "$-" =~ i ]] && return;
 
+# Set default editor
+export EDITOR=vim
+
 # Update the $PATH var
 PATH="$PATH:$HOME/bin:/opt/android-studio/gradle/gradle-3.3/bin"
 
