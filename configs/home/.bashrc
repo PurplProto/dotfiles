@@ -9,6 +9,9 @@
 export EDITOR=vim
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
+# Makes GPG signing work
+export GPG_TTY=$(tty)
+
 # Update the $PATH var
 PATH="$PATH:$HOME/bin:/opt/android-studio/gradle/gradle-3.3/bin"
 
@@ -77,3 +80,7 @@ if [ -f "${SSH_ENV}" ]; then
 else
     start_agent;
 fi
+
+function npm-do {
+    (PATH=$(npm bin):$PATH; eval $@;)
+}
