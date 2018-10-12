@@ -84,3 +84,26 @@ fi
 function npm-do {
     (PATH=$(npm bin):$PATH; eval $@;)
 }
+
+# $1 = user
+# $2 = command
+# $@ = --all --the -f -l -a -g -s
+# example - do-as root ls "-lah /tmp"
+function do-as {
+    local user=$1
+    local whichOut=$(which $2)
+
+    if [[ ! -z $whichOut ]]
+    then
+        local command=$whichOut
+    else
+        local command=$(readlink -sf $2)
+    fi
+
+    shift 2
+
+    local commandString="$command $@"
+
+    sudo su -l $user -s /bin/bash -c "cd `pwd` && $commandString"
+}
+
