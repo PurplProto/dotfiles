@@ -17,14 +17,14 @@ depFiles=(
 
 for FILE in "${homeFiles[@]}"
 do
-	mv "~/$FILE" ~/$FILE.bak
-	ln -s "$projectLocation/configs/home/$FILE" ~/$FILE
+	mv "$HOME/$FILE" $HOME/$FILE.bak
+	ln -s "$projectLocation/configs/home/$FILE" $HOME/$FILE
 done
 
 for FILE in "${depFiles[@]}"
 do
-	ln -s "$projectLocation/dependencies/$FILE" ~/$FILE
+	ln -s "$projectLocation/dependencies/$FILE" $HOME/$FILE
 done
 
-echo "Now type \"exec .bashrc\""
+echo "Now type \". $HOME/.bashrc\""
 
