@@ -37,7 +37,7 @@
 [pull]
   rebase = preserve
 [push]
-  default = nothing
+  default = matching
 [alias]
   br         = branch
   st         = status
