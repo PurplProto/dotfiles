@@ -70,10 +70,38 @@ function start_agent {
     /usr/bin/ssh-add;
 }
 
+function sourceSshEnvBash() {
+    . "${SSH_ENV}" > /dev/null
+}
+
+function sourceSshEnvWindows() {
+    if [[ ! `which setx.exe` ]]; then
+        return
+    fi
+
+    WIN_SSH_ENV=$(cat ~/.ssh/environment | awk 'NR<=2 {print $1}')
+    LOOP_COUNT=0
+
+    echo "Setting SSH environment variables for Windows, this will take a moment... Because Windows."
+
+    for LINE in ${WIN_SSH_ENV[@]}; do
+        ((LOOP_COUNT++))
+        VAR_VAL=()
+
+        IFS='=' read -ra ENV_VAR <<< "$LINE"
+        for i in "${ENV_VAR[@]}"; do
+            VAR_VAL+=($i)
+        done
+
+        echo "Setting Windows env var ${LOOP_COUNT} of 2"
+        setx.exe ${VAR_VAL[0]} $VAR_VAL[1]%?} > /dev/null
+    done
+}
+
 # Source SSH settings, if applicable
 if [ -f "${SSH_ENV}" ]; then
-    . "${SSH_ENV}" > /dev/null
-    #ps ${SSH_AGENT_PID} doesn't work under cywgin
+    sourceSshEnvBash;
+    sourceSshEnvWindows;
     ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
         start_agent;
     }
