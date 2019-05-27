@@ -6,10 +6,10 @@
 	helper = cache --timeout=18000
 [core] 
   editor       = vim
+  autocrlf     = input
   ignorefile   = /home/pairedprototype/.gitignore
   excludesfile = /home/pairedprototype/.gitignore
 [color] 
-  autocrlf    = input
   branch      = auto
   diff        = auto
   status      = auto
