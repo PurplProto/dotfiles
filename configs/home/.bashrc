@@ -23,6 +23,7 @@ HISTFILESIZE=2000
 shopt -s histappend
 shopt -s checkwinsize
 shopt -s globstar
+shopt -s extglob
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
