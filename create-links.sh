@@ -2,7 +2,7 @@
 
 set -x
 
-projectLocation=$(dirname $(readlink -f "$0"))
+projectLocation="$(dirname "$(readlink -f "$0")")"
 
 homeFiles=(
 	.bashrc
