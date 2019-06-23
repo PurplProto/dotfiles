@@ -69,3 +69,6 @@ set tabstop=4
 set shiftwidth=4
 
 set expandtab
+
+" Kills audio termain bell sounds
+set visualbell
