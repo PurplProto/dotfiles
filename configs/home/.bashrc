@@ -104,7 +104,7 @@ function initNewAgent() {
     /usr/bin/ssh-agent -a "${SSH_SOCK_PATH}" | sed 's/^echo/#echo/' > "${SSH_ENV}" && echo "Succeeded"
     /bin/chmod 600 "${SSH_ENV}"
     sourceSshEnvBash
-    /usr/bin/ssh-add "${HOME}/.ssh/id_rsa"!(*.pub)
+    /usr/bin/ssh-add "${HOME}/.ssh/id_"!(*.pub)
 }
 
 test -f $SSH_ENV && sourceSshEnvBash && agentIsInRunnableState || recoverAgent || initNewAgent
