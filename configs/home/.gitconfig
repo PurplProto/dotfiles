@@ -1,9 +1,3 @@
-[user]
-	name  = PairedPrototype
-	email = pairedprototype@hotmail.com
-	signingkey = F090FD7021D3A2C4
-[credential]
-	helper = cache --timeout=18000
 [core] 
   editor       = vim
   autocrlf     = input
@@ -37,7 +31,7 @@
 [pull]
   rebase = preserve
 [push]
-  default = matching
+	default = current
 [alias]
   br         = branch
   st         = status
