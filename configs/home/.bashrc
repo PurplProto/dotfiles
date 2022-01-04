@@ -20,6 +20,8 @@ HISTCONTROL=ignoreboth
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
+# Allows us to differentiate GitBash or a real *nix system.
+ENV_TYPE=$(uname -s | cut -d\- -f1)
 
 # Set shell options
 shopt -s histappend
@@ -31,18 +33,18 @@ shopt -s extglob
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+    if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+        . /usr/share/bash-completion/bash_completion
+    elif [[ -f /etc/bash_completion ]]; then
+        . /etc/bash_completion
+    fi
 fi
 
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+[[ -x /usr/bin/lesspipe ]] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+if [[ -z "${debian_chroot:-}" ]] && [[ -r /etc/debian_chroot ]]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
@@ -54,28 +56,27 @@ else
 fi
 
 # Set aliases
-if [ -f ~/.bash_aliases ]; then
+if [[ -f ~/.bash_aliases ]]; then
     . ~/.bash_aliases
 fi
 
-SYS_TYPE=$(uname -s | cut -d\- -f1) # To handle WSL, GitBash on the same machine
-SSH_ENV="${HOME}/.ssh/.environment-${SYS_TYPE}"
-SSH_SOCK_PATH="${HOME}/.ssh-agent-${SYS_TYPE}.sock"
+SSH_ENV="${HOME}/.ssh/.environment-${ENV_TYPE}"
+SSH_SOCK_PATH="${HOME}/.ssh-agent-${ENV_TYPE}.sock"
 
 function sourceSshEnvBash() {
     . $SSH_ENV > /dev/null
 }
 
 function setWinVarsWhenGitBash() {
-    if [[ $SYS_TYPE == "MINGW64_NT" ]]; then
+    if [[ $ENV_TYPE == "MINGW64_NT" ]]; then
         setx.exe SSH_AUTH_SOCK $SSH_AUTH_SOCK > /dev/null
         setx.exe SSH_AGENT_PID $SSH_AGENT_PID > /dev/null
     fi
 }
 
 function recoverAgentPid() {
-    local -
-    set -e
+    local - # Allows scoped shopt
+    set -e  # Exit immediately if a command exits with a non-zero status.
     set -o pipefail
     ps -ef | grep /usr/bin/ssh-agent | grep -v grep | awk 'FNR == 1 {print $2}' 2> /dev/null
 }
