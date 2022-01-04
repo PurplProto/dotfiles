@@ -7,6 +7,7 @@ projectLocation="$(dirname "$(readlink -f "$0")")"
 homeFiles=(
     .bashrc
     .bash_ps
+    .bash_aliases
     .gitconfig
     .vimrc
 )
