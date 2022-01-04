@@ -60,58 +60,7 @@ if [[ -f ~/.bash_aliases ]]; then
     . ~/.bash_aliases
 fi
 
-SSH_ENV="${HOME}/.ssh/.environment-${ENV_TYPE}"
-SSH_SOCK_PATH="${HOME}/.ssh-agent-${ENV_TYPE}.sock"
-
-function sourceSshEnvBash() {
-    . $SSH_ENV > /dev/null
-}
-
-function setWinVarsWhenGitBash() {
-    if [[ $ENV_TYPE == "MINGW64_NT" ]]; then
-        setx.exe SSH_AUTH_SOCK $SSH_AUTH_SOCK > /dev/null
-        setx.exe SSH_AGENT_PID $SSH_AGENT_PID > /dev/null
-    fi
-}
-
-function recoverAgentPid() {
-    local - # Allows scoped shopt
-    set -e  # Exit immediately if a command exits with a non-zero status.
-    set -o pipefail
-    ps -ef | grep /usr/bin/ssh-agent | grep -v grep | awk 'FNR == 1 {print $2}' 2> /dev/null
-}
-
-function agentIsInRunnableState() {
-    recoverAgentPid > /dev/null  && test -e $SSH_AUTH_SOCK
-}
-
-function recoverAgent() {
-    agentPid=$(recoverAgentPid)
-
-    if agentIsInRunnableState; then
-        export SSH_AUTH_SOCK=$SSH_SOCK_PATH
-        export SSH_AGENT_PID=$agentPid
-
-        echo "SSH_AUTH_SOCK=${SSH_AUTH_SOCK}; export SSH_AUTH_SOCK;" > $SSH_ENV
-        echo "SSH_AGENT_PID=${SSH_AGENT_PID}; export SSH_AGENT_PID;" >> $SSH_ENV
-        echo "#echo Agent pid ${SSH_AGENT_PID};" >> $SSH_ENV
-
-        /bin/chmod 600 $SSH_ENV
-        return 0
-    fi
-
-    rm -f $SSH_SOCK_PATH
-    rm -f $SSH_ENV
-    return 1
-}
-
-function initNewAgent() {
-    echo "Initialising new SSH agent..."
-    /usr/bin/ssh-agent -a "${SSH_SOCK_PATH}" | sed 's/^echo/#echo/' > "${SSH_ENV}" && echo "Succeeded"
-    /bin/chmod 600 "${SSH_ENV}"
-    sourceSshEnvBash
-    /usr/bin/ssh-add "${HOME}/.ssh/id_"!(*.pub)
-}
-
-test -f $SSH_ENV && sourceSshEnvBash && agentIsInRunnableState || recoverAgent || initNewAgent
-setWinVarsWhenGitBash
+# Configure SSH
+if [[ -f ~/.bash_ssh ]]; then
+    . ~/.bash_ssh
+fi
