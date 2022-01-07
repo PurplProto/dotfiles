@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -12,6 +14,7 @@ esac
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 export EDITOR=vim
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
+# shellcheck disable=SC2155 # We're not using the return value directly
 export GPG_TTY=$(tty) # Makes GPG signing work
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -20,8 +23,6 @@ HISTCONTROL=ignoreboth
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
-# Allows us to differentiate GitBash or a real *nix system.
-ENV_TYPE=$(uname -s | cut -d\- -f1)
 
 # Set shell options
 shopt -s histappend
@@ -34,8 +35,10 @@ shopt -s extglob
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
     if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+        # shellcheck disable=SC1091
         . /usr/share/bash-completion/bash_completion
     elif [[ -f /etc/bash_completion ]]; then
+        # shellcheck disable=SC1091
         . /etc/bash_completion
     fi
 fi
@@ -50,6 +53,7 @@ fi
 
 # Set PS1 with color
 if [[ -f ~/.bash_ps ]]; then
+    # shellcheck source=configs/home/.bash_ps
     . ~/.bash_ps
 else
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
@@ -57,10 +61,12 @@ fi
 
 # Set aliases
 if [[ -f ~/.bash_aliases ]]; then
+    # shellcheck source=configs/home/.bash_aliases
     . ~/.bash_aliases
 fi
 
 # Configure SSH
 if [[ -f ~/.bash_ssh ]]; then
+    # shellcheck source=configs/home/.bash_ssh
     . ~/.bash_ssh
 fi

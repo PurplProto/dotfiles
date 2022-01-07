@@ -1,14 +1,21 @@
-SSH_ENV="${HOME}/.ssh/.environment-${ENV_TYPE}"
-SSH_SOCK_PATH="${HOME}/.ssh/.agent-${ENV_TYPE}.sock"
+# shellcheck shell=bash
+
+# Allows us to differentiate GitBash or a real *nix system.
+envType=$(uname -s | cut -d- -f1)
+sshEnvPath="${HOME}/.ssh/.environment-${envType}"
+sshSockPath="${HOME}/.ssh/.agent-${envType}.sock"
 
 function sourceSshEnvBash() {
-    . $SSH_ENV > /dev/null
+    # This is a file the script creates and reads when
+    # needed, it doesn't exist at development time
+    # shellcheck disable=SC1090
+    . "$sshEnvPath" > /dev/null
 }
 
 function setWinVarsWhenGitBash() {
-    if [[ $ENV_TYPE == "MINGW64_NT" ]]; then
-        setx.exe SSH_AUTH_SOCK $SSH_AUTH_SOCK > /dev/null
-        setx.exe SSH_AGENT_PID $SSH_AGENT_PID > /dev/null
+    if [[ $envType == "MINGW64_NT" ]]; then
+        setx.exe SSH_AUTH_SOCK "$SSH_AUTH_SOCK" > /dev/null
+        setx.exe SSH_AGENT_PID "$SSH_AGENT_PID" > /dev/null
     fi
 }
 
@@ -16,40 +23,43 @@ function recoverAgentPid() {
     local - # Allows scoped shopt
     set -e  # Exit immediately if a command exits with a non-zero status.
     set -o pipefail
+
+    # MINGW64_NT aka GitBash does not support pgrep 😢
+    # shellcheck disable=SC2009
     ps -ef | grep /usr/bin/ssh-agent | grep -v grep | awk 'FNR == 1 {print $2}' 2> /dev/null
 }
 
 function agentIsInRunnableState() {
-    recoverAgentPid > /dev/null  && test -e $SSH_AUTH_SOCK
+    recoverAgentPid > /dev/null  && test -e "$SSH_AUTH_SOCK"
 }
 
 function recoverAgent() {
     agentPid=$(recoverAgentPid)
 
     if agentIsInRunnableState; then
-        export SSH_AUTH_SOCK=$SSH_SOCK_PATH
+        export SSH_AUTH_SOCK=$sshSockPath
         export SSH_AGENT_PID=$agentPid
 
-        echo "SSH_AUTH_SOCK=${SSH_AUTH_SOCK}; export SSH_AUTH_SOCK;" > $SSH_ENV
-        echo "SSH_AGENT_PID=${SSH_AGENT_PID}; export SSH_AGENT_PID;" >> $SSH_ENV
-        echo "#echo Agent pid ${SSH_AGENT_PID};" >> $SSH_ENV
+        echo "SSH_AUTH_SOCK=${SSH_AUTH_SOCK}; export SSH_AUTH_SOCK;" > "$sshEnvPath"
+        echo "SSH_AGENT_PID=${SSH_AGENT_PID}; export SSH_AGENT_PID;" >> "$sshEnvPath"
+        echo "#echo Agent pid ${SSH_AGENT_PID};" >> "$sshEnvPath"
 
-        /bin/chmod 600 $SSH_ENV
+        /bin/chmod 600 "$sshEnvPath"
         return 0
     fi
 
-    rm -f $SSH_SOCK_PATH
-    rm -f $SSH_ENV
+    rm -f "$sshSockPath"
+    rm -f "$sshEnvPath"
     return 1
 }
 
 function initNewAgent() {
     echo "Initialising new SSH agent..."
-    /usr/bin/ssh-agent -a "${SSH_SOCK_PATH}" | sed 's/^echo/#echo/' > "${SSH_ENV}" && echo "Succeeded"
-    /bin/chmod 600 "${SSH_ENV}"
+    /usr/bin/ssh-agent -a "${sshSockPath}" | sed 's/^echo/#echo/' > "${sshEnvPath}" && echo "Succeeded"
+    /bin/chmod 600 "${sshEnvPath}"
     sourceSshEnvBash
     /usr/bin/ssh-add "${HOME}/.ssh/id_"!(*.pub)
 }
 
-test -f $SSH_ENV && sourceSshEnvBash && agentIsInRunnableState || recoverAgent || initNewAgent
+test -f "$sshEnvPath" && sourceSshEnvBash && agentIsInRunnableState || recoverAgent || initNewAgent
 setWinVarsWhenGitBash
