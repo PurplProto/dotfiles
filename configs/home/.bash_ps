@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 # shellcheck source=dependencies/git-prompt/.git-prompt.sh
-source ~/.git-prompt.sh
+source ~/.dotfiles-dependencies/git-prompt/.git-prompt.sh
 
 # `$debian_chroot` is the problematic variable however the
 # preceeding code already accounts for it being unset
