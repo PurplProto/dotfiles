@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 projectLocation="$(dirname "$(readlink -f "$0")")"
 projectHome="$projectLocation/configs/home"
 projectDependencies="$projectLocation/dependencies"
@@ -16,10 +14,6 @@ homeFiles=(
     .gitconfig
     .vimrc
 )
-
-# depFiles=(
-#     git-prompt/.git-prompt.sh
-# )
 
 usage() {
   local exitCode=$1
