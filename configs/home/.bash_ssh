@@ -42,7 +42,7 @@ function recoverAgent() {
 
         echo "SSH_AUTH_SOCK=${SSH_AUTH_SOCK}; export SSH_AUTH_SOCK;" > "$sshEnvPath"
         echo "SSH_AGENT_PID=${SSH_AGENT_PID}; export SSH_AGENT_PID;" >> "$sshEnvPath"
-        echo "#echo Agent pid ${SSH_AGENT_PID};" >> "$sshEnvPath"
+        echo "#echo Agent pid $SSH_AGENT_PID;" >> "$sshEnvPath"
 
         /bin/chmod 600 "$sshEnvPath"
         return 0
@@ -54,12 +54,15 @@ function recoverAgent() {
 }
 
 function initNewAgent() {
+    if [[ ! -d "$HOME/.ssh" ]] || [[ -z "$(ls -A "$HOME/.ssh/id_"!(*.pub))" ]]; then
+      return 0
+    fi
+
     echo "Initialising new SSH agent..."
-    /usr/bin/ssh-agent -a "${sshSockPath}" | sed 's/^echo/#echo/' > "${sshEnvPath}" && echo "Succeeded"
-    /bin/chmod 600 "${sshEnvPath}"
+    /usr/bin/ssh-agent -a "$sshSockPath" | sed 's/^echo/#echo/' > "$sshEnvPath" && echo "Succeeded"
+    /bin/chmod 600 "$sshEnvPath"
     sourceSshEnvBash
-    /usr/bin/ssh-add "${HOME}/.ssh/id_"!(*.pub)
+    /usr/bin/ssh-add "$HOME/.ssh/id_"!(*.pub)
 }
 
-test -f "$sshEnvPath" && sourceSshEnvBash && agentIsInRunnableState || recoverAgent || initNewAgent
-setWinVarsWhenGitBash
+test -f "$sshEnvPath" && sourceSshEnvBash && agentIsInRunnableState || recoverAgent || initNewAgent && setWinVarsWhenGitBash
