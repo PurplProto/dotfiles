@@ -62,7 +62,7 @@ if [[ -v CREATE ]]; then
 elif [[ -v RESTORE ]]; then
   for FILE in "${homeFiles[@]}"; do
     # When the file exists and is a link to our project, we can safely remove it
-    if [[ -f "$HOME/$FILE" ]] && [[ "$(readlink -f "$HOME/$FILE")" == $projectHome/$FILE ]]; then
+    if [[ -f "$HOME/$FILE" ]] && cmp --silent -- "$(readlink -f "$HOME/$FILE")" "$projectHome/$FILE"; then
       rm "$HOME/$FILE"
     fi
   done
