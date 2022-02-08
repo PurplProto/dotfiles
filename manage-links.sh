@@ -5,8 +5,9 @@ projectHome="$projectLocation/configs/home"
 projectDependencies="$projectLocation/dependencies"
 homeDependencies="$HOME/.dotfiles-dependencies"
 homeBackUp="$HOME/.dotfiles.bak"
-homeFiles=$(ls -A "$projectHome")
 userOverrides="$HOME/.dotfile-overrides"
+
+mapfile -t homeFiles < <(ls -A "$projectHome")
 
 usage() {
   local exitCode=$1
@@ -67,9 +68,9 @@ elif [[ -v RESTORE ]]; then
   done
 
   if [[ -d "$homeBackUp" ]]; then
-    if [[ -n $(ls -A "$homeBackUp") ]]; then
-      # shellcheck disable=SC2045
-      for FILE in $(ls -A "$homeBackUp"); do
+    mapfile -t backups < <(ls -A "$homeBackUp")
+    if [[ -n ${backups[*]} ]]; then
+      for FILE in "${backups[@]}"; do
         mv "$homeBackUp/$FILE" "$HOME"
       done
 
@@ -77,7 +78,8 @@ elif [[ -v RESTORE ]]; then
     fi
   fi
 
-  if [[ -z $(ls -A "$userOverrides") ]]; then
+  mapfile -t overrides < <(ls -A "$userOverrides")
+  if [[ -z ${overrides[*]} ]]; then
     rm -rf "$userOverrides"
   fi
 
