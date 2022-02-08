@@ -5,15 +5,7 @@ projectHome="$projectLocation/configs/home"
 projectDependencies="$projectLocation/dependencies"
 homeDependencies="$HOME/.dotfiles-dependencies"
 homeBackUp="$HOME/.dotfiles.bak"
-
-homeFiles=(
-    .bash_aliases
-    .bash_ps # Depends on git-prompt
-    .bash_ssh
-    .bashrc
-    .gitconfig
-    .vimrc
-)
+homeFiles=$(ls -A "$projectHome")
 
 usage() {
   local exitCode=$1
