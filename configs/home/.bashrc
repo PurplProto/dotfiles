@@ -72,7 +72,7 @@ if [[ -f ~/.bash_ssh ]]; then
 fi
 
 # Source any user overrides
-for FILE in "$HOME/.dotfile-overrides/"*; do
+for FILE in "$HOME"/.dotfile-overrides/*; do
   if [[ -f $FILE ]]; then
     # We can't source what doesn't exist yet, if anything.
     # So ignore shellcheck warning
