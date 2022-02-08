@@ -6,8 +6,8 @@
 
 # If not running interactively, don't do anything
 case $- in
-    *i*) ;;
-      *) return;;
+  *i*) ;;
+    *) return;;
 esac
 
 # colored GCC warnings and errors
@@ -34,13 +34,13 @@ shopt -s extglob
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
-    if [[ -f /usr/share/bash-completion/bash_completion ]]; then
-        # shellcheck disable=SC1091
-        . /usr/share/bash-completion/bash_completion
-    elif [[ -f /etc/bash_completion ]]; then
-        # shellcheck disable=SC1091
-        . /etc/bash_completion
-    fi
+  if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+    # shellcheck disable=SC1091
+    . /usr/share/bash-completion/bash_completion
+  elif [[ -f /etc/bash_completion ]]; then
+    # shellcheck disable=SC1091
+    . /etc/bash_completion
+  fi
 fi
 
 # make less more friendly for non-text input files, see lesspipe(1)
@@ -48,25 +48,35 @@ fi
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [[ -z "${debian_chroot:-}" ]] && [[ -r /etc/debian_chroot ]]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+  debian_chroot=$(cat /etc/debian_chroot)
 fi
 
 # Set PS1 with color
 if [[ -f ~/.bash_ps ]]; then
-    # shellcheck source=configs/home/.bash_ps
-    . ~/.bash_ps
+  # shellcheck source=configs/home/.bash_ps
+  . ~/.bash_ps
 else
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+  PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 fi
 
 # Set aliases
 if [[ -f ~/.bash_aliases ]]; then
-    # shellcheck source=configs/home/.bash_aliases
-    . ~/.bash_aliases
+  # shellcheck source=configs/home/.bash_aliases
+  . ~/.bash_aliases
 fi
 
 # Configure SSH
 if [[ -f ~/.bash_ssh ]]; then
-    # shellcheck source=configs/home/.bash_ssh
-    . ~/.bash_ssh
+  # shellcheck source=configs/home/.bash_ssh
+  . ~/.bash_ssh
 fi
+
+# Source any user overrides
+for FILE in "$HOME/.dotfile-overrides/"*; do
+  if [[ -f $FILE ]]; then
+    # We can't source what doesn't exist yet, if anything.
+    # So ignore shellcheck warning
+    # shellcheck disable=SC1090
+    source "$FILE"
+  fi
+done

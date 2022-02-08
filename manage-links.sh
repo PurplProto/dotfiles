@@ -6,6 +6,7 @@ projectDependencies="$projectLocation/dependencies"
 homeDependencies="$HOME/.dotfiles-dependencies"
 homeBackUp="$HOME/.dotfiles.bak"
 homeFiles=$(ls -A "$projectHome")
+userOverrides="$HOME/.dotfile-overrides"
 
 usage() {
   local exitCode=$1
@@ -40,16 +41,22 @@ do
 done
 
 if [[ -v CREATE ]]; then
-  for FILE in "${homeFiles[@]}"; do
-    mkdir -p "$homeBackUp"
+  # Create backup directory
+  mkdir -p "$homeBackUp"
+  # Create override directory
+  mkdir -p "$userOverrides"
 
+  for FILE in "${homeFiles[@]}"; do
+    #  Backup any existing config
     if [[ -f "$HOME/$FILE" ]]; then
         mv "$HOME/$FILE" "$homeBackUp/$FILE"
     fi
 
+    # Link file to home directory
     ln -s "$projectHome/$FILE" "$HOME/$FILE"
   done
 
+  #  Link project dependencies
   ln -s "$projectDependencies" "$homeDependencies"
 elif [[ -v RESTORE ]]; then
   for FILE in "${homeFiles[@]}"; do
@@ -60,14 +67,18 @@ elif [[ -v RESTORE ]]; then
   done
 
   if [[ -d "$homeBackUp" ]]; then
-    if [[ -n "$(ls -A "$homeBackUp")" ]]; then
+    if [[ -n $(ls -A "$homeBackUp") ]]; then
       # shellcheck disable=SC2045
       for FILE in $(ls -A "$homeBackUp"); do
-      mv "$homeBackUp/$FILE" "$HOME"
+        mv "$homeBackUp/$FILE" "$HOME"
       done
 
       rm -r "$homeBackUp"
     fi
+  fi
+
+  if [[ -z $(ls -A "$userOverrides") ]]; then
+    rm -rf "$userOverrides"
   fi
 
   rm -r "$homeDependencies"
