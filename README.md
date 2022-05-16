@@ -1,4 +1,9 @@
 # My configs
 
-1. Simply run the `create-links.sh` script.
-2. Then run `. ~/.bashrc` to reload the `.bashrc` file.
+## TODO
+
+- Update readme lol
+
+## Notes
+
+Hidden files are not sourced in the `.dotfiles-override` directory.

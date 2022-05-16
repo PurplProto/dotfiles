@@ -1,16 +1,26 @@
+# shellcheck shell=bash
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
 # If not running interactively, don't do anything
-[[ ! "$-" =~ i ]] && return;
+case $- in
+  *i*) ;;
+    *) return;;
+esac
 
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 export EDITOR=vim
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
+# shellcheck disable=SC2155 # We're not using the return value directly
 export GPG_TTY=$(tty) # Makes GPG signing work
 
-# History settings and limitations.
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
 HISTCONTROL=ignoreboth
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
 
@@ -20,92 +30,47 @@ shopt -s checkwinsize
 shopt -s globstar
 shopt -s extglob
 
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+    # shellcheck disable=SC1091
+    . /usr/share/bash-completion/bash_completion
+  elif [[ -f /etc/bash_completion ]]; then
+    # shellcheck disable=SC1091
+    . /etc/bash_completion
+  fi
+fi
+
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+[[ -x /usr/bin/lesspipe ]] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+if [[ -z "${debian_chroot:-}" ]] && [[ -r /etc/debian_chroot ]]; then
+  debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# Define the default coloured name
+# Set PS1 with color
 if [[ -f ~/.bash_ps ]]; then
-    . ~/.bash_ps
+  # shellcheck source=configs/home/.bash_ps
+  . ~/.bash_ps
 else
-    PS1="\${debian_chroot:+(\$debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]\[\033[00m\]$ "
+  PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 fi
 
-# enable color support of ls and also add handy aliases
-if [ -x "/usr/bin/dircolors" ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+# Set aliases
+if [[ -f ~/.bash_aliases ]]; then
+  # shellcheck source=configs/home/.bash_aliases
+  . ~/.bash_aliases
 fi
 
-alias ll='ls -alF'
-alias la='ls -lah'
-alias l='ls -CF'
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-test -f ~/.bash_aliases && . ~/.bash_aliases
-
-SYS_TYPE=$(uname -s | cut -d\- -f1) # To handle WSL, GitBash on the same machine
-SSH_ENV="${HOME}/.ssh/.environment-${SYS_TYPE}"
-SSH_SOCK_PATH="${HOME}/.ssh-agent-${SYS_TYPE}.sock"
-
-function sourceSshEnvBash() {
-    . $SSH_ENV > /dev/null
-}
-
-function setWinVarsWhenGitBash() {
-    if [[ $SYS_TYPE == "MINGW64_NT" ]]; then
-        setx.exe SSH_AUTH_SOCK $SSH_AUTH_SOCK > /dev/null
-        setx.exe SSH_AGENT_PID $SSH_AGENT_PID > /dev/null
-    fi
-}
-
-function recoverAgentPid() {
-    local -
-    set -e
-    set -o pipefail
-    ps -ef | grep /usr/bin/ssh-agent | grep -v grep | awk 'FNR == 1 {print $2}' 2> /dev/null
-}
-
-function agentIsInRunnableState() {
-    recoverAgentPid > /dev/null  && test -e $SSH_AUTH_SOCK
-}
-
-function recoverAgent() {
-    agentPid=$(recoverAgentPid)
-
-    if agentIsInRunnableState; then
-        export SSH_AUTH_SOCK=$SSH_SOCK_PATH
-        export SSH_AGENT_PID=$agentPid
-
-        echo "SSH_AUTH_SOCK=${SSH_AUTH_SOCK}; export SSH_AUTH_SOCK;" > $SSH_ENV
-        echo "SSH_AGENT_PID=${SSH_AGENT_PID}; export SSH_AGENT_PID;" >> $SSH_ENV
-        echo "#echo Agent pid ${SSH_AGENT_PID};" >> $SSH_ENV
-
-        /bin/chmod 600 $SSH_ENV
-        return 0
-    fi
-
-    rm -f $SSH_SOCK_PATH
-    rm -f $SSH_ENV
-    return 1
-}
-
-function initNewAgent() {
-    echo "Initialising new SSH agent..."
-    /usr/bin/ssh-agent -a "${SSH_SOCK_PATH}" | sed 's/^echo/#echo/' > "${SSH_ENV}" && echo "Succeeded"
-    /bin/chmod 600 "${SSH_ENV}"
-    sourceSshEnvBash
-    /usr/bin/ssh-add "${HOME}/.ssh/id_"!(*.pub)
-}
-
-test -f $SSH_ENV && sourceSshEnvBash && agentIsInRunnableState || recoverAgent || initNewAgent
-setWinVarsWhenGitBash
+# Source any user overrides
+for FILE in "$HOME"/.dotfile-overrides/*; do
+  if [[ -f $FILE ]]; then
+    # We can't source what doesn't exist yet, if anything.
+    # So ignore shellcheck warning
+    # shellcheck disable=SC1090
+    source "$FILE"
+  fi
+done

@@ -1,49 +1,46 @@
-[core] 
-  editor       = vim
-  autocrlf     = input
-  ignorefile   = /home/pairedprototype/.gitignore
-  excludesfile = /home/pairedprototype/.gitignore
-[color] 
-  branch      = auto
-  diff        = auto
-  status      = auto
+[core]
+  editor = code --wait
+  autocrlf = input
+	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+[color]
+  branch = auto
+  diff = auto
+  status = auto
   interactive = auto
-  ui          = auto
+  ui = auto
 [color "branch"]
   current = yellow reverse
-  local   = yellow bold
-  remote  = cyan bold
+  local = yellow bold
+  remote = cyan bold
 [color "diff"]
-  new    = yellow bold
-  old    = red bold
-  meta   = cyan bold
-  frag   = white bold
+  new = yellow bold
+  old = red bold
+  meta = cyan bold
+  frag = white bold
   commit = white bold
 [color "status"]
-  added     = yellow bold
-  changed   = cyan bold
+  added = yellow bold
+  changed = cyan bold
   untracked = red bold
-  branch    = blue bold
+  branch = blue bold
 [difftool]
   prompt = false
 [mergetool]
   keepBackup = false
 [pull]
-  rebase = preserve
+  rebase = merges
 [push]
-	default = current
+  default = current
 [alias]
-  br         = branch
-  st         = status
-  co         = checkout
-  addr       = add -A .
-  stat       = log --stat
-  commits    = log --all --graph --abbrev-commit --date=relative --pretty=format:'%C(bold blue)%h%Creset -%C(auto)%d%Creset %s %C(yellow)(%cr) %C(bold blue)<%an>%Creset'
-  ff         = merge --ff-only
-  uncommit   = reset --soft HEAD~1
+  br = branch
+  st = status
+  co = checkout
+  fp = fetch -p
+  rod = rebase origin/develop
+  stat = log --stat
+  commits = log --all --graph --abbrev-commit --date=relative --pretty=format:'%C(bold blue)%h%Creset -%C(auto)%d%Creset %s %C(yellow)(%cr) %C(bold blue)<%an>%Creset'
+  uncommit = reset --soft HEAD~1
   diffmaster = diff --stat --cached master
-  rbm        = rebase master
-  distance   = "!f() { git log --oneline master..HEAD | wc -l; }; echo \"📊  `f` - Commits ahead\""
-  squash     = rebase --interactive
+  distance = "!f() { git log --oneline master..HEAD | wc -l; }; echo \"📊 `f` - Commits ahead\""
 [gpg]
-	program = gpg2
+  program = gpg2
