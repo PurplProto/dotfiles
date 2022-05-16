@@ -65,12 +65,6 @@ if [[ -f ~/.bash_aliases ]]; then
   . ~/.bash_aliases
 fi
 
-# Configure SSH
-if [[ -f ~/.bash_ssh ]]; then
-  # shellcheck source=configs/home/.bash_ssh
-  . ~/.bash_ssh
-fi
-
 # Source any user overrides
 for FILE in "$HOME"/.dotfile-overrides/*; do
   if [[ -f $FILE ]]; then

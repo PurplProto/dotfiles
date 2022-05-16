@@ -1,6 +1,7 @@
 [core]
   editor = code --wait
   autocrlf = input
+	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
 [color]
   branch = auto
   diff = auto
