@@ -1,5 +1,7 @@
 # shellcheck shell=bash
 
+ISWSL=$(uname -r | grep WSL2 > /dev/null && echo 1 || echo 0)
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -63,6 +65,11 @@ fi
 if [[ -f ~/.bash_aliases ]]; then
   # shellcheck source=configs/home/.bash_aliases
   . ~/.bash_aliases
+fi
+
+# Set up the SSH agent socket relay to the Windows host
+if [[ $ISWSL -eq 1 ]]; then
+  . ~/.bash_ssh
 fi
 
 # Source any user overrides
