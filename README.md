@@ -2,8 +2,9 @@
 
 A bunch of configs I like to use on nearly every terminal. This repo makes it easy for me to setup new environments to my preferred configuration.
 
-## Notes
+## Features
 
+- SSH script will attempt to connect to an SSH Agent running on Windows (for example, 1Password's built-in agent) when this script in executed in WSL.
 - Hidden files are not sourced in the `.dotfiles-override` directory.
 - When using the `manage-links.sh` script to create symlinks, it will attempt to backup existing configs it will replace.
 - When using the `manage-links.sh` script to remove symlinks, it will attempt to restore backed up configs so the terminal will remain in a usaable state.
