@@ -66,6 +66,7 @@ if [[ -v CREATE ]]; then
   # Create override directory
   mkdir -p "$userOverrides"
 
+  # Symlink all the configs
   for FILE in "${homeFiles[@]}"; do
     if [[ -L "$HOME/$FILE" ]] && [[ "$(readlink -f "$HOME/$FILE")" == "$projectHome/$FILE" ]]; then
       # Looks like this file has already been symlinked
@@ -81,8 +82,10 @@ if [[ -v CREATE ]]; then
     ln -s "$projectHome/$FILE" "$HOME/$FILE"
   done
 
-  #  Link project dependencies
-  ln -s "$projectDependencies" "$homeDependencies"
+  if [[ ! -L "$homeDependencies" ]]; then
+    #  Link project dependencies
+    ln -s "$projectDependencies" "$homeDependencies"
+  fi
 elif [[ -v RESTORE ]]; then
   for FILE in "${homeFiles[@]}"; do
     # When the file exists and is a link to our project, we can safely remove it
