@@ -17,9 +17,9 @@ usage() {
   fi
 
   printf 'Usage %s:\n' "$0"
-  printf '\t\t-c, --create  \t Create the links\n'
-  printf '\t\t-r, --restore \t Restore the original files\n'
-  printf '\t\t-R, --restore-full \t Restore the original files and remove the %s directory\n' "$userOverrides"
+  printf '\t-c, --create  \t\t Create symlinks to the project configs\n'
+  printf '\t-r, --restore \t\t Restore the original files\n'
+  printf '\t-R, --restore-full \t Restore the original files and remove the %s directory\n' "$userOverrides"
   exit $exitCode
 }
 
