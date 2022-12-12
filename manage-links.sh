@@ -67,6 +67,11 @@ if [[ -v CREATE ]]; then
   mkdir -p "$userOverrides"
 
   for FILE in "${homeFiles[@]}"; do
+    if [[ -L "$HOME/$FILE" ]] && [[ "$(readlink -f "$HOME/$FILE")" == "$projectHome/$FILE" ]]; then
+      # Looks like this file has already been symlinked
+      continue
+    fi
+
     if [[ -f "$HOME/$FILE" ]]; then
       #  Backup any existing config
       mv "$HOME/$FILE" "$homeBackUp/$FILE"
