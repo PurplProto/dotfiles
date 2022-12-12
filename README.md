@@ -18,3 +18,6 @@ A bunch of configs I like to use on nearly every terminal. This repo makes it ea
 
 ### To remove the configs
 1. Execute `./manage-links.sh -r` to restore backed up configs, if they were created or still exist.
+
+## TODO
+- Check restore process is sound
