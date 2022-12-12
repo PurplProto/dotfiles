@@ -22,22 +22,35 @@ usage() {
   exit $exitCode
 }
 
-PARSED_ARGUMENTS=$(getopt -n manage-links  -o chr --long create,help,restore -- "$@")
+PARSED_ARGUMENTS=$(getopt -n manage-links -o chr --long create,help,restore -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
   usage
 fi
 
 eval set -- "$PARSED_ARGUMENTS"
-while :
-do
+while :; do
   case "$1" in
-    -c | --create)    CREATE=1 ; shift ;;
-    -h | --help)      usage 0; shift ;;
-    -r | --restore)   RESTORE=1 ; shift ;;
-    --) shift; break ;;
-    *) echo "Unexpected option: $1"
-       usage ;;
+  -c | --create)
+    CREATE=1
+    shift
+    ;;
+  -h | --help)
+    usage 0
+    shift
+    ;;
+  -r | --restore)
+    RESTORE=1
+    shift
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    echo "Unexpected option: $1"
+    usage
+    ;;
   esac
 done
 
@@ -48,9 +61,9 @@ if [[ -v CREATE ]]; then
   mkdir -p "$userOverrides"
 
   for FILE in "${homeFiles[@]}"; do
-    #  Backup any existing config
     if [[ -f "$HOME/$FILE" ]]; then
-        mv "$HOME/$FILE" "$homeBackUp/$FILE"
+      #  Backup any existing config
+      mv "$HOME/$FILE" "$homeBackUp/$FILE"
     fi
 
     # Link file to home directory
