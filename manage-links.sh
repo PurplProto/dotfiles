@@ -19,6 +19,7 @@ usage() {
   printf 'Usage %s:\n' "$0"
   printf '\t\t-c, --create  \t Create the links\n'
   printf '\t\t-r, --restore \t Restore the original files\n'
+  printf '\t\t-R, --restore-full \t Restore the original files and remove the %s directory\n' "$userOverrides"
   exit $exitCode
 }
 
@@ -41,6 +42,11 @@ while :; do
     ;;
   -r | --restore)
     RESTORE=1
+    shift
+    ;;
+  -R | --restore-full)
+    RESTORE=1
+    REMOVE_OVERRIDES=1
     shift
     ;;
   --)
@@ -91,8 +97,7 @@ elif [[ -v RESTORE ]]; then
     fi
   fi
 
-  mapfile -t overrides < <(ls -A "$userOverrides")
-  if [[ -z ${overrides[*]} ]]; then
+  if [[ -v $REMOVE_OVERRIDES ]]; then
     rm -rf "$userOverrides"
   fi
 
