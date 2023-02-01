@@ -43,3 +43,5 @@
   distance = "!f() { git log --oneline master..HEAD | wc -l; }; echo \"📊 `f` - Commits ahead\""
 [gpg]
   program = gpg2
+[init]
+  defaultBranch = master
