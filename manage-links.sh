@@ -17,27 +17,46 @@ usage() {
   fi
 
   printf 'Usage %s:\n' "$0"
-  printf '\t\t-c, --create  \t Create the links\n'
-  printf '\t\t-r, --restore \t Restore the original files\n'
+  printf '\t-c, --create  \t\t Create symlinks to the project configs\n'
+  printf '\t-r, --restore \t\t Restore the original files\n'
+  printf '\t-R, --restore-full \t Restore the original files and remove the %s directory\n' "$userOverrides"
   exit $exitCode
 }
 
-PARSED_ARGUMENTS=$(getopt -n manage-links  -o chr --long create,help,restore -- "$@")
+PARSED_ARGUMENTS=$(getopt -n manage-links -o chr --long create,help,restore -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
   usage
 fi
 
 eval set -- "$PARSED_ARGUMENTS"
-while :
-do
+while :; do
   case "$1" in
-    -c | --create)    CREATE=1 ; shift ;;
-    -h | --help)      usage 0; shift ;;
-    -r | --restore)   RESTORE=1 ; shift ;;
-    --) shift; break ;;
-    *) echo "Unexpected option: $1"
-       usage ;;
+  -c | --create)
+    CREATE=1
+    shift
+    ;;
+  -h | --help)
+    usage 0
+    shift
+    ;;
+  -r | --restore)
+    RESTORE=1
+    shift
+    ;;
+  -R | --restore-full)
+    RESTORE=1
+    REMOVE_OVERRIDES=1
+    shift
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    echo "Unexpected option: $1"
+    usage
+    ;;
   esac
 done
 
@@ -47,22 +66,30 @@ if [[ -v CREATE ]]; then
   # Create override directory
   mkdir -p "$userOverrides"
 
+  # Symlink all the configs
   for FILE in "${homeFiles[@]}"; do
-    #  Backup any existing config
+    if [[ -L "$HOME/$FILE" ]] && [[ "$(readlink -f "$HOME/$FILE")" == "$projectHome/$FILE" ]]; then
+      # Looks like this file has already been symlinked
+      continue
+    fi
+
     if [[ -f "$HOME/$FILE" ]]; then
-        mv "$HOME/$FILE" "$homeBackUp/$FILE"
+      #  Backup any existing config
+      mv "$HOME/$FILE" "$homeBackUp/$FILE"
     fi
 
     # Link file to home directory
     ln -s "$projectHome/$FILE" "$HOME/$FILE"
   done
 
-  #  Link project dependencies
-  ln -s "$projectDependencies" "$homeDependencies"
+  if [[ ! -L "$homeDependencies" ]]; then
+    #  Link project dependencies
+    ln -s "$projectDependencies" "$homeDependencies"
+  fi
 elif [[ -v RESTORE ]]; then
   for FILE in "${homeFiles[@]}"; do
     # When the file exists and is a link to our project, we can safely remove it
-    if [[ -f "$HOME/$FILE" ]] && cmp --silent -- "$(readlink -f "$HOME/$FILE")" "$projectHome/$FILE"; then
+    if [[ -L "$HOME/$FILE" ]] && [[ "$(readlink -f "$HOME/$FILE")" == "$projectHome/$FILE" ]]; then
       rm "$HOME/$FILE"
     fi
   done
@@ -78,8 +105,7 @@ elif [[ -v RESTORE ]]; then
     fi
   fi
 
-  mapfile -t overrides < <(ls -A "$userOverrides")
-  if [[ -z ${overrides[*]} ]]; then
+  if [[ -v $REMOVE_OVERRIDES ]]; then
     rm -rf "$userOverrides"
   fi
 
