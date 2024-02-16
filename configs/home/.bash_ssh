@@ -1,21 +1,3 @@
-# Author: Stuart Leeks, PurplProto
-# Source: https://stuartleeks.com/posts/wsl-ssh-key-forward-to-windows/
+alias winUserPath='find /mnt/c/Users/ -maxdepth 1 -type d -iname paire*'
 
-# Configure ssh forwarding
-export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
-# Need `ps -ww` to get non-truncated command for matching
-# Use square brackets to generate a regex match for the process we want but that doesn't match the grep command running it!
-ALREADY_RUNNING=$(ps -auxww | grep -q "[n]piperelay.exe -ei -s //./pipe/openssh-ssh-agent"; echo $?)
-# npiperelay might be running, but the pipe could be dead. Check if we can access the agent.
-PIPE_ALIVE=$(ssh-add -l > /dev/null 2>&1; echo $?)
-if [[ $ALREADY_RUNNING != "0" ]] || [[ $PIPE_ALIVE != "0" ]]; then
-  if [[ -S $SSH_AUTH_SOCK ]]; then
-    # Not expecting the socket to exist as the forwarding command isn't running (http://www.tldp.org/LDP/abs/html/fto.html)
-    echo "removing previous socket..."
-    rm $SSH_AUTH_SOCK
-  fi
-  echo "Starting SSH-Agent relay..."
-  # setsid to force new session to keep running
-  # Set socat to listen on $SSH_AUTH_SOCK and forward to npiperelay which then forwards to openssh-ssh-agent on windows
-  (setsid socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:"npiperelay.exe -ei -s //./pipe/openssh-ssh-agent",nofork &) >/dev/null 2>&1
-fi
+alias ssh='cp ~/.ssh/config $(winUserPath)/.ssh/config && ssh.exe'
