@@ -1,3 +1,7 @@
-alias winUserPath='find /mnt/c/Users/ -maxdepth 1 -type d -iname paire*'
+winUserPath() {
+  find /mnt/c/Users/ -maxdepth 1 -type d -iname paire*
+}
 
-alias ssh='cp ~/.ssh/config $(winUserPath)/.ssh/config && ssh.exe'
+ssh() {
+  cp ~/.ssh/config $(winUserPath)/.ssh/config && ssh.exe "$@"
+}
