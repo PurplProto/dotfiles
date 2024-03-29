@@ -1,5 +1,5 @@
 winUserPath() {
-  find /mnt/c/Users/ -maxdepth 1 -type d -iname paire*
+  echo /mnt/c/$(cmd.exe /C 'echo %USERPROFILE%' 2> /dev/null | awk -F'\' '{print $2 "/" $3}' | tr -d '\r')
 }
 
 ssh() {
