@@ -6,4 +6,4 @@ source ~/.dotfile-dependencies/git-prompt/.git-prompt.sh
 # `$debian_chroot` is the problematic variable however the
 # preceding code already accounts for it being unset
 # shellcheck disable=SC2154
-PS1="\${debian_chroot:+(\$debian_chroot)}\[\033[01;32m\]\u@\H\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]\$(__git_ps1)\[\033[00m\]$ "
+PS1="\${debian_chroot:+(\$debian_chroot)}\[\033[01;32m\]\u@\H\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]\$(__git_ps1)\[\033[00m\]\n$ "
