@@ -1,7 +1,7 @@
 [core]
   editor = code --wait
   autocrlf = input
-  sshCommand = ~/.dotfiles-dependencies/ssh-wrapper/ssh.sh
+  sshCommand = ~/.dotfile-dependencies/ssh-wrapper/ssh.sh
 [color]
   branch = auto
   diff = auto

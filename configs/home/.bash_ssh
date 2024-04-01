@@ -1,7 +1,0 @@
-winUserPath() {
-  find /mnt/c/Users/ -maxdepth 1 -type d -iname paire*
-}
-
-ssh() {
-  cp ~/.ssh/config $(winUserPath)/.ssh/config && ssh.exe "$@"
-}

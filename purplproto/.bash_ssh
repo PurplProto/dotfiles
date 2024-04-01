@@ -1,0 +1,8 @@
+winUserPath() {
+  # shellcheck disable=SC1003
+  echo /mnt/c/"$(cmd.exe /C 'echo %USERPROFILE%' 2> /dev/null | awk -F'\' '{print $2 "/" $3}' | tr -d '\r')"
+}
+
+ssh() {
+  cp ~/.ssh/config "$(winUserPath)"/.ssh/config && ssh.exe "$@"
+}

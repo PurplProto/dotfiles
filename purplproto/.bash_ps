@@ -1,0 +1,6 @@
+# shellcheck shell=bash
+
+# shellcheck source=.dotfile-dependencies/git-prompt/.git-prompt.sh
+. ~/.dotfile-dependencies/git-prompt/.git-prompt.sh
+
+PS1="\[\033[01;32m\]\u@\H\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]\$(__git_ps1)\[\033[00m\]\n$ "
