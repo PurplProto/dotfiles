@@ -1,1 +1,4 @@
 external-sources=true
+
+# Disable POSIX errors, these dotfiles are only for bash
+disable=SC3001-SC3100

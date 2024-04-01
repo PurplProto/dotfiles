@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-ISWSL=$(uname -r | grep WSL2 > /dev/null && echo 1 || echo 0)
-
-if [ $ISWSL -eq 1 ]; then
+# Disable shellcheck error for double quoting as this should be a numeric value that we set and control
+# shellcheck disable=SC2086
+if [ $IS_WSL -eq 1 ]; then
+  # shellcheck source=../../.bash_ssh
   . ~/.bash_ssh
 fi
 
