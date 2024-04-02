@@ -1,0 +1,15 @@
+# shellcheck shell=bash
+
+IS_WSL=$(uname -r | grep WSL2 > /dev/null && echo 1 || echo 0)
+export IS_WSL
+
+if [[ $IS_WSL -eq 1 ]]; then
+  winUserPath() {
+    # shellcheck disable=SC1003 # We are not trying to escape a single quote here
+    echo /mnt/c/"$(cmd.exe /C 'echo %USERPROFILE%' 2> /dev/null | awk -F'\' '{print $2 "/" $3}' | tr -d '\r')"
+  }
+
+  op() {
+    op.exe "$@"
+  }
+fi

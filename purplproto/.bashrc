@@ -1,8 +1,5 @@
 # shellcheck shell=bash
 
-IS_WSL=$(uname -r | grep WSL2 > /dev/null && echo 1 || echo 0)
-export IS_WSL
-
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -62,23 +59,37 @@ else
   PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 fi
 
+# Configure WSL specific settings
+if [[ -f ~/.bash_wsl ]]; then
+  # shellcheck source=.bash_wsl
+  . ~/.bash_wsl
+fi
+
+# Source any "pre" user overrides
+for FILE in "$HOME"/.dotfile-overrides/*.pre; do
+  if [[ -f $FILE ]]; then
+    # We can't source what doesn't exist yet, if anything, so ignore shellcheck warning
+    # shellcheck disable=SC1090
+    source "$FILE"
+  fi
+done
+
 # Set aliases
 if [[ -f ~/.bash_aliases ]]; then
   # shellcheck source=.bash_aliases
   . ~/.bash_aliases
 fi
 
-# Set up the SSH agent socket relay to the Windows host
-if [[ $IS_WSL -eq 1 ]]; then
+# Configure SSH agent
+if [[ -f ~/.bash_ssh ]]; then
   # shellcheck source=.bash_ssh
   . ~/.bash_ssh
 fi
 
-# Source any user overrides
-for FILE in "$HOME"/.dotfile-overrides/*; do
+# Source any "post" user overrides
+for FILE in "$HOME"/.dotfile-overrides/*.post; do
   if [[ -f $FILE ]]; then
-    # We can't source what doesn't exist yet, if anything.
-    # So ignore shellcheck warning
+    # We can't source what doesn't exist yet, if anything, so ignore shellcheck warning
     # shellcheck disable=SC1090
     source "$FILE"
   fi
