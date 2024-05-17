@@ -8,6 +8,13 @@ if [ -z "$SSH_AGENT_PID" ]; then
   SSH_AGENT_PID=$(cat "$ssh_pid_file" 2> /dev/null)
 fi
 
+addSshKey() {
+  local key="$1"
+  op item get "$key" --reveal --fields 'label=private key' | \
+  sed -e 's/\"//g' -e 's/\r//g' -e '1d' \
+  | ssh-add -q -
+}
+
 if ! kill -0 "$SSH_AGENT_PID" &> /dev/null; then
   # the agent is not running, start it
   rm -f "$SSH_AUTH_SOCK"
@@ -20,7 +27,7 @@ if ! kill -0 "$SSH_AGENT_PID" &> /dev/null; then
     eval "$(op signin)"
 
     for key in "${ONEPASS_PRIVKEY_IDS[@]}"; do
-      op item get "$key" --reveal --fields 'label=private key' | sed -e '/^"/d' -e 's/\r//g' | ssh-add -q -
+      addSshKey "$key"
     done
   fi
 fi
