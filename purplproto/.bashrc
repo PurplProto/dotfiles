@@ -17,6 +17,9 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1
 # shellcheck disable=SC2155 # We're not using the return value directly
 export GPG_TTY="$(tty)" # Makes GPG signing work
 
+# Make tar report progress
+export TAR_OPTIONS="--checkpoint=200 --checkpoint-action=ttyout='%{%Y-%m-%d %H:%M:%S}t (%d sec): #%u, %T%*\r'"
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
