@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -x
+
+if [[ $IS_WSL -eq 0 ]]; then
+    bin_opts=$(which -a notify-send)
+    filtered_bin_opts=$(echo "$bin_opts" | grep -v "$HOME/.local/bin/notify-send") # Remove the WSL notify-send
+    "${filtered_bin_opts[0]}" "${@}" # Call the first non-WSL notify-send
+else
+    wsl-notify-send.exe --category "$WSL_DISTRO_NAME" "${@}"
+fi
+
+set +x
