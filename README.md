@@ -13,7 +13,8 @@ A bunch of nice to haves I like on most environments.
 ### To install the configs
 
 1. Clone the repo.
-2. Execute `./stow.sh` to create symlinks in the user's home directory to the dotfiles here.
+2. Run `./install-deps.sh` if `stow` is not already installed.
+2. Execute `. ./stow.sh` to create symlinks in the user's home directory to the dotfiles here.
 
 ### To remove the configs
 
