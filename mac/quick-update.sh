@@ -3,5 +3,5 @@
 brew update
 brew outdated
 brew upgrade
-bew autoremove --scrub
+brew autoremove
 brew cleanup

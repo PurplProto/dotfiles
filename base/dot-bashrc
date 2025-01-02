@@ -6,8 +6,8 @@
 
 # If not running interactively, don't do anything
 case $- in
-  *i*) ;;
-    *) return;;
+*i*) ;;
+*) return ;;
 esac
 
 # colored GCC warnings and errors
@@ -35,16 +35,16 @@ shopt -s extglob
 
 # enable programmable completion features
 if ! shopt -oq posix; then
-  if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+  if [[ -f /opt/homebrew/etc/bash_completion ]]; then
+    # shellcheck disable=SC1091
+    . /opt/homebrew/etc/bash_completion
+  elif [[ -f /usr/share/bash-completion/bash_completion ]]; then
     # shellcheck disable=SC1091
     . /usr/share/bash-completion/bash_completion
   elif [[ -f /etc/bash_completion ]]; then
     # shellcheck disable=SC1091
     . /etc/bash_completion
   fi
-  elif [[ -f /opt/homebrew/etc/bash_completion ]]; then
-    # shellcheck disable=SC1091
-    . /opt/homebrew/etc/bash_completion
 fi
 
 # make less more friendly for non-text input files, see lesspipe(1)
