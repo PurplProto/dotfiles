@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 # Check if the script is being sourced
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]] && [[ "$1" != "-F" ]]; then
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]] && [[ -z ${1:-} ]]; then
   echo "This script should be sourced, not executed."
   echo "Try running: . $0"
   echo "If this was intentional, run with -F to force. You'll need to . $HOME/.bashrc manually afterwards."
