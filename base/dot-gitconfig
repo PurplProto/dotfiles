@@ -52,3 +52,9 @@
   program = gpg2
 [init]
   defaultBranch = master
+
+[include]
+    path = ~/.gitconfig-private
+
+[includeIf "gitdir:~/repos/work/"]
+    path = ~/.gitconfig-work
