@@ -117,7 +117,3 @@ fi
 echo "Restarting shell..."
 
 exec $SHELL -ilc "echo Done!; exec $SHELL -il"
-
-################################
-# Test backup command to ensure it works aftertwards (will need to use bash replace "dot-" with "." though)
-################################
