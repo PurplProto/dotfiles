@@ -87,6 +87,24 @@ function WSL_SETUP() {
   echo "Detected WSL. Stowing wsl directory..."
   BACKUP_EXISTING_DOTFILES "wsl"
   stow --dotfiles --target "$HOME" --dir "$STOW_BASE_DIR" "wsl"
+
+  # Ask confirmation to configure additional helpers
+  read -p 'Configure Windows version of `op` and `ssh` for WSL? (n/Y): ' -rn 1
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo -e "\n'/usr/local/bin' usually appears in the PATH before '/usr/bin', so we'll use that."
+
+    openssh_path="/mnt/c/Windows/System32/OpenSSH"
+    echo "Symlinking 'ssh' and friends into /usr/local/bin"
+    for i in $(ls $openssh_path/*.exe | xargs -i basename {};); do
+      echo "Symlinking /usr/local/bin/${i/.exe} -> $openssh_path/$i"
+      sudo ln -s $openssh_path/$i /usr/local/bin/${i/.exe} || echo "Symlink already exists"
+    done
+
+    echo "Symlinking 'op' into /usr/local/bin"
+    if where.exe op &>/dev/null; then
+      sudo ln -s "$(wslpath -u "$(where.exe op | tr -d '\r')")" /usr/local/bin/op
+    fi
+  fi
 }
 
 STOW_BASE_DIR=$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")
