@@ -1,0 +1,1 @@
+../linux/quick-update.sh
