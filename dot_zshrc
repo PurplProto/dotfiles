@@ -1,0 +1,30 @@
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=10000
+setopt beep extendedglob nomatch
+unsetopt notify
+bindkey -v
+# End of lines configured by zsh-newuser-install
+
+# The following lines were added by compinstall
+zstyle :compinstall filename '~/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+# Start of user config
+source ~/.zsh_omz
+source ~/.zsh_aliases
+source ~/.zsh_functions
+
+eval "$(oh-my-posh init zsh --config "~/.config/purplproto.omp.json")"
+
+# Allow sourcing additional dotfiles by placing them in ~/.dotfile-additions/ with a .post extension. Perfect for machine-specific config.
+for FILE in "$HOME"/.dotfile-additions/*.post; do
+  if [[ -f $FILE ]]; then
+    source "$FILE"
+  fi
+done
+# End of user config

@@ -1,0 +1,29 @@
+{{- /* This file is a template for the .chezmoi.json file. It is used to store data that can be accessed in other templates. */ -}}
+
+{{- $machineTypeChoices := list "personal" "work" -}}
+{{- $machineType := promptChoiceOnce . "machineType" "What is this machine's type: " $machineTypeChoices -}}
+
+{{- $osid := .chezmoi.os -}}
+{{- if hasKey .chezmoi.osRelease "idLike" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.idLike -}}
+{{- else if hasKey .chezmoi.osRelease "id" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- $pkgManager := "unknown" -}}
+{{- if eq $osid "darwin" -}}
+{{-   $pkgManager = "brew" -}}
+{{- else if eq $osid "linux-fedora" -}}
+{{-   $pkgManager = "dnf" -}}
+{{- else if eq $osid "linux-debian" -}}
+{{-   $pkgManager = "apt" -}}
+{{- end -}}
+
+{
+    "data": {
+        "machineType": {{ $machineType | quote }},
+        "onePassGitInfoId": {{ if eq $machineType "personal" }}{{ "twcow7kl47yyjpf64wrxvll5na" | quote }}{{ else if eq $machineType "work" }}{{ "xpzpp56wyhedzlvve273nxsedu" | quote }}{{ else }}{{ "unknown" | quote }}{{ end }},
+        "osIdentifier": {{ $osid | quote }},
+        "pkgManager": {{ $pkgManager | quote }}
+    }
+}

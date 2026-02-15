@@ -1,0 +1,15 @@
+# Give me my bin execs!
+export PATH="$HOME/.local/bin:$PATH"
+
+# Set keyboard layout to US
+export LANG=en_US.UTF-8
+
+# Set default editors
+export EDITOR="vim"
+export VISUAL="code --wait"
+
+# Set default SSH agent socket to 1Password
+export SSH_AUTH_SOCK=~/.1password/agent.sock
+
+# Set default Spicetify config directory
+export SPICETIFY_INSTALL="~/.config/spicetify"

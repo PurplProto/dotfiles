@@ -1,0 +1,11 @@
+{
+    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+    "extends": "velvet",
+    "final_space": true,
+    "version": 4,
+    "upgrade": {
+        "source": "cdn",
+        "auto": true,
+        "notice": true
+    }
+}

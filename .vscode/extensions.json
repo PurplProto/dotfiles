@@ -1,6 +1,7 @@
 {
   "recommendations": [
-    "timonwong.shellcheck",
-    "foxundermoon.shell-format"
+    "mads-hartmann.bash-ide-vscode",
+    "davidanson.vscode-markdownlint",
+    "yzhang.markdown-all-in-one"
   ]
 }
