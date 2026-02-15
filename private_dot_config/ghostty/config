@@ -1,0 +1,96 @@
+# This is the configuration file for Ghostty.
+#
+# This template file has been automatically created at the following
+# path since Ghostty couldn't find any existing config files on your system:
+#
+#   /home/purplproto/.config/ghostty/config
+#
+# The template does not set any default options, since Ghostty ships
+# with sensible defaults for all options. Users should only need to set
+# options that they want to change from the default.
+#
+# Run `ghostty +show-config --default --docs` to view a list of
+# all available config options and their default values.
+#
+# Additionally, each config option is also explained in detail
+# on Ghostty's website, at https://ghostty.org/docs/config.
+
+# Config syntax crash course
+# ==========================
+# # The config file consists of simple key-value pairs,
+# # separated by equals signs.
+# font-family = Iosevka
+# window-padding-x = 2
+#
+# # Spacing around the equals sign does not matter.
+# # All of these are identical:
+# key=value
+# key= value
+# key =value
+# key = value
+#
+# # Any line beginning with a # is a comment. It's not possible to put:
+# # a comment after a config option, since it would be interpreted as a
+# # part of the value. For example, this will have a value of "#123abc":
+# background = #123abc
+#
+# # Empty values are used to reset config keys to default.
+# key =
+#
+# # Some config options have unique syntaxes for their value,
+# # which is explained in the docs for that config option.
+# # Just for example:
+# resize-overlay-duration = 4s 200ms
+
+# Dark Purple Theme for Ghostty
+# Documentation:
+# - Configuration Overview: https://ghostty.org/docs/config
+# - Configuration Options Reference: https://ghostty.org/docs/config/reference
+
+# Background and Foreground Colors
+background = 0f071e
+foreground = cac8ce
+cursor-color = 9c85c6
+
+# ANSI Color Palette
+# Black
+palette = 0=#1e1b2f
+# Red
+palette = 1=#a54242
+# Green
+palette = 2=#8c9440
+# Yellow
+palette = 3=#de935f
+# Blue
+palette = 4=#5f819d
+# Magenta
+palette = 5=#85678f
+# Cyan
+palette = 6=#5e8d87
+# White
+palette = 7=#c5c8c6
+# Bright Black
+palette = 8=#666666
+# Bright Red
+palette = 9=#cc6666
+# Bright Green
+palette = 10=#b5bd68
+# Bright Yellow
+palette = 11=#f0c674
+# Bright Blue
+palette = 12=#81a2be
+# Bright Magenta
+palette = 13=#b294bb
+# Bright Cyan
+palette = 14=#8abeb7
+# Bright White
+palette = 15=#ffffff
+
+# Cursor Settings
+cursor-style = "block"
+cursor-style-blink = false
+shell-integration-features = no-cursor
+
+# Window Settings
+window-height = 30
+window-width = 100
