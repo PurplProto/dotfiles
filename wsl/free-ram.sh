@@ -1,1 +1,0 @@
-../linux/free-ram.sh

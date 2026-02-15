@@ -1,0 +1,25 @@
+update-system-packages() {
+{{- if eq .pkgManager "brew" }}
+  brew update
+  brew outdated
+  brew upgrade
+  brew autoremove
+  brew cleanup
+{{- else if eq .pkgManager "dnf" }}
+  sudo dnf update -y
+  sudo dnf upgrade
+  sudo dnf autoremove -y
+  sudo dnf clean all
+{{- else if eq .pkgManager "apt" }}
+  sudo apt-get update
+  sudo apt-get upgrade
+  sudo apt-get dist-upgrade
+  sudo apt-get autoremove -y
+  sudo apt-get autoclean -y
+{{- end }}
+}
+
+free-system-memory() {
+  sync
+  echo 1 > /proc/sys/vm/drop_caches
+}

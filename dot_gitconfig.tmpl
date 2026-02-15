@@ -1,42 +1,54 @@
 [core]
   editor = code --wait
   autocrlf = input
+
 [color]
   branch = auto
   diff = auto
   status = auto
   interactive = auto
   ui = auto
+
 [color "branch"]
   current = yellow reverse
   local = yellow bold
   remote = cyan bold
+
 [color "diff"]
   new = yellow bold
   old = red bold
   meta = cyan bold
   frag = white bold
   commit = white bold
+
 [color "status"]
   added = yellow bold
   changed = cyan bold
   untracked = red bold
   branch = blue bold
+
 [difftool]
   prompt = false
   tool = vscode
+
 [difftool "vscode"]
   cmd = code --wait --diff $LOCAL $REMOTE
+
 [merge]
   tool = vscode
+
 [mergetool]
   keepBackup = false
+
 [mergetool "vscode"]
   cmd = code --wait $MERGED
+
 [pull]
   rebase = merges
+
 [push]
   default = current
+
 [alias]
   br = branch
   st = status
@@ -48,13 +60,13 @@
   uncommit = reset --soft HEAD~1
   diffmaster = diff --stat --cached master
   distance = "!f() { git log --oneline master..HEAD | wc -l; }; echo \"📊 `f` - Commits ahead\""
+
 [gpg]
   program = gpg2
+
 [init]
   defaultBranch = master
 
-[include]
-    path = ~/.gitconfig-private
-
-[includeIf "gitdir:~/repos/work/"]
-    path = ~/.gitconfig-work
+[user]
+  name = {{ (onepasswordItemFields .onePassGitInfoId).username.value | quote }}
+  email = {{ (onepasswordDetailsFields .onePassGitInfoId).username.value | quote }}
