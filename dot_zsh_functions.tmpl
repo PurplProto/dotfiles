@@ -6,7 +6,7 @@ update-system-packages() {
   brew autoremove
   brew cleanup
 {{- else if eq .pkgManager "dnf" }}
-  sudo dnf update -y
+  sudo dnf check-upgrade
   sudo dnf upgrade
   sudo dnf autoremove -y
   sudo dnf clean all
