@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Installing OhMyZsh plugin dependencies..."
+
+install_omz_plugin_deps_dnf() {
+    sudo dnf install -y thefuck
+}
+
+install_omz_plugin_deps_brew() {
+    brew install thefuck
+}
+
+PKG_MANAGER="{{ .pkgManager }}"
+case "$PKG_MANAGER" in
+    dnf*) install_omz_plugin_deps_dnf ;;
+    brew*) install_omz_plugin_deps_brew ;;
+    *) echo "Unsupported package manager: $PKG_MANAGER. Not installing OhMyZsh plugin dependencies." ; exit 0 ;;
+esac
+
+echo "OhMyZsh plugin dependencies installation complete."
