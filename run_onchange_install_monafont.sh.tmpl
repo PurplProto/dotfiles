@@ -3,35 +3,47 @@ set -euo pipefail
 
 echo "Installing Monaspace Nerd Font..."
 
+install_monaspace_linux() {
+    TAG="{{ (gitHubLatestRelease "githubnext/monaspace").TagName }}"
+    ASSET="monaspace-nerdfonts-${TAG}.zip"
+    URL="https://github.com/githubnext/monaspace/releases/download/${TAG}/${ASSET}"
+
+    install_dir="$HOME/.local/share/fonts/Monaspace"
+    tmp_dir="$(mktemp -d)"
+
+    cleanup() {
+        rm -rf "$tmp_dir"
+    }
+    trap cleanup EXIT
+
+    echo "Found tag version: $TAG"
+
+    mkdir -p "$install_dir"
+
+    echo "Downloading Monaspace Nerd Font from $URL..."
+    curl -fL "$URL" -o "$tmp_dir/$ASSET"
+
+    echo "Extracting Monaspace Nerd Font to $install_dir..."
+    unzip -o "$tmp_dir/$ASSET" -d "$install_dir"
+
+    echo "Updating font cache..."
+    fc-cache -f "$HOME/.local/share/fonts"
+}
+
+install_monaspace_macos() {
+    if ! command -v brew >/dev/null 2>&1; then
+        echo "Homebrew is required on macOS. Please install brew and re-run." >&2
+        exit 1
+    fi
+
+    brew install --cask font-monaspace-nf
+}
+
 OS_ID="{{ .osIdentifier }}"
 case "$OS_ID" in
-	linux*) ;;
-	*) echo "Unsupported OS: $OS_ID. Not installing Monaspace Nerd Font." ; exit 0 ;;
+    linux*) install_monaspace_linux ;;
+    darwin*) install_monaspace_macos ;;
+    *) echo "Unsupported OS: $OS_ID. Not installing Monaspace Nerd Font." ; exit 0 ;;
 esac
-
-TAG="{{ (gitHubLatestRelease "githubnext/monaspace").TagName }}"
-ASSET="monaspace-nerdfonts-${TAG}.zip"
-URL="https://github.com/githubnext/monaspace/releases/download/${TAG}/${ASSET}"
-
-install_dir="$HOME/.local/share/fonts/Monaspace"
-tmp_dir="$(mktemp -d)"
-
-cleanup() {
-	rm -rf "$tmp_dir"
-}
-trap cleanup EXIT
-
-echo "Found tag version: $TAG"
-
-mkdir -p "$install_dir"
-
-echo "Downloading Monaspace Nerd Font from $URL..."
-curl -fL "$URL" -o "$tmp_dir/$ASSET"
-
-echo "Extracting Monaspace Nerd Font to $install_dir..."
-unzip -o "$tmp_dir/$ASSET" -d "$install_dir"
-
-echo "Updating font cache..."
-fc-cache -f "$HOME/.local/share/fonts"
 
 echo "Monaspace Nerd Font installation complete."
