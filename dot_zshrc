@@ -23,9 +23,11 @@ eval $(thefuck --alias)
 eval "$(oh-my-posh init zsh --config "~/.config/purplproto.omp.json")"
 
 # Allow sourcing additional dotfiles by placing them in ~/.dotfile-additions/ with a .post extension. Perfect for machine-specific config.
-for FILE in "$HOME"/.dotfile-additions/*.post; do
-  if [[ -f $FILE ]]; then
-    source "$FILE"
-  fi
-done
+if [[ -d "$HOME"/.dotfile-additions ]]; then
+  for FILE in "$HOME"/.dotfile-additions/*.post(N); do
+    if [[ -f $FILE ]]; then
+      source "$FILE"
+    fi
+  done
+fi
 # End of user config
