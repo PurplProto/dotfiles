@@ -19,7 +19,6 @@ source ~/.zsh_omz
 source ~/.zsh_aliases
 source ~/.zsh_functions
 
-eval $(thefuck --alias)
 eval "$(oh-my-posh init zsh --config "~/.config/purplproto.omp.json")"
 
 # Allow sourcing additional dotfiles by placing them in ~/.dotfile-additions/ with a .post extension. Perfect for machine-specific config.
