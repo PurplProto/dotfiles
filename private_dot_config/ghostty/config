@@ -94,3 +94,7 @@ shell-integration-features = no-cursor
 # Window Settings
 window-height = 30
 window-width = 100
+
+# Disable mouse smooth scrolling
+mouse-scroll-multiplier = precision:1,discrete:1
+
